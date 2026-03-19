@@ -7,26 +7,22 @@ const app = express();
 const bare = createBareServer("/bare/");
 const PORT = process.env.PORT || 8080;
 
-app.use(
-  "/uv/",
-  express.static(
-    path.join(__dirname, "node_modules/@titaniumnetwork-dev/ultraviolet/dist")
-  )
-);
+// Pointing to the renamed 'uv' folder instead of the banned name
+app.use("/uv/", express.static(path.join(__dirname, "node_modules/uv/dist")));
 
 app.get("/uv/uv.config.js", (req, res) => {
   res.setHeader("Content-Type", "application/javascript");
   res.send(`
-self.__uv$config = {
-  prefix: "/service/",
-  bare: "/bare/",
-  encodeUrl: Ultraviolet.codec.xor.encode,
-  decodeUrl: Ultraviolet.codec.xor.decode,
-  handler: "/uv/uv.handler.js",
-  bundle: "/uv/uv.bundle.js",
-  config: "/uv/uv.config.js",
-  sw: "/uv/uv.sw.js",
-};
+    self.__uv$config = {
+      prefix: "/service/",
+      bare: "/bare/",
+      encodeUrl: Ultraviolet.codec.xor.encode,
+      decodeUrl: Ultraviolet.codec.xor.decode,
+      handler: "/uv/uv.handler.js",
+      bundle: "/uv/uv.bundle.js",
+      config: "/uv/uv.config.js",
+      sw: "/uv/uv.sw.js",
+    };
   `);
 });
 
@@ -49,5 +45,5 @@ server.on("upgrade", (req, socket, head) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`✅ Running at http://localhost:${PORT}`);
+  console.log(`Server is active on port ${PORT}`);
 });
